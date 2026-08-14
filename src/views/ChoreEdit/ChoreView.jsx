@@ -1,5 +1,6 @@
 import {
   Archive,
+  ArrowBack,
   AttachFile,
   CalendarMonth,
   Check,
@@ -622,6 +623,15 @@ const ChoreView = () => {
         maxHeight: 'calc(100vh - 500px)',
       }}
     >
+      <IconButton
+        variant='plain'
+        color='neutral'
+        size='sm'
+        onClick={() => navigate(-1)}
+        sx={{ alignSelf: 'flex-start', mb: 1 }}
+      >
+        <ArrowBack />
+      </IconButton>
       <Box
         sx={{
           display: 'flex',
