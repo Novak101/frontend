@@ -65,6 +65,7 @@ import {
   ChoreStatus,
   notInCompletionWindow,
 } from '../../utils/Chores.jsx'
+import { resolvePhotoURL } from '../../utils/Helpers'
 import { getTextColorFromBackgroundColor } from '../../utils/Colors.jsx'
 import { commandQueue, CommandType } from '../../utils/CommandQueue'
 import {
@@ -183,8 +184,9 @@ const ChoreView = () => {
           size: 6,
           icon: <PeopleAlt />,
           title: t('choreView.assignment'),
-          avatarSrc: performers.find(p => p.userId === chore.assignedTo)
-            ?.image,
+          avatarSrc: resolvePhotoURL(
+            performers.find(p => p.userId === chore.assignedTo)?.image,
+          ),
           text: `${t('choreView.assigned')}: ${
             performers.find(p => p.userId === chore.assignedTo)?.displayName ||
             t('choreView.na')

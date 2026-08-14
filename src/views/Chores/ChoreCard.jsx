@@ -33,6 +33,7 @@ import {
 } from '../../utils/ChoreCardHelpers.jsx'
 import { notInCompletionWindow } from '../../utils/Chores.jsx'
 import { getTextColorFromBackgroundColor } from '../../utils/Colors.jsx'
+import { resolvePhotoURL } from '../../utils/Helpers'
 import Priorities from '../../utils/Priorities'
 import { ICON_COMPONENTS } from '../../constants/choreIcons'
 import ChoreActionMenu from '../components/ChoreActionMenu'
@@ -241,11 +242,11 @@ const ChoreCard = ({
                         variant='outlined'
                         startDecorator={
                           <Avatar
-                            src={
+                            src={resolvePhotoURL(
                               performers.find(
                                 p => p.userId === chore.assignedTo,
-                              )?.image
-                            }
+                              )?.image,
+                            )}
                           />
                         }
                       >
