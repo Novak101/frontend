@@ -12,6 +12,7 @@ import { Avatar, Box, Card, Chip, IconButton, Typography } from '@mui/joy'
 import moment from 'moment'
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { TASK_COLOR } from '../../utils/Colors.jsx'
+import { resolvePhotoURL } from '../../utils/Helpers'
 import PendingBadge from '../components/PendingBadge'
 
 const formatTime = seconds => {
@@ -160,7 +161,7 @@ const HistoryCard = ({
               variant='soft'
               color='neutral'
               startDecorator={
-                <Avatar src={performer.image} alt={performer.displayName} sx={{ width: 14, height: 14 }} />
+                <Avatar src={resolvePhotoURL(performer.image)} alt={performer.displayName} sx={{ width: 14, height: 14 }} />
               }
             >
               {performer.displayName}

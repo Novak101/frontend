@@ -47,6 +47,7 @@ import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import { useLabels } from '../Labels/LabelQueries'
 import { ChoresGrouper } from '../../utils/Chores'
 import { COLORS, TASK_COLOR } from '../../utils/Colors.jsx'
+import { resolvePhotoURL } from '../../utils/Helpers'
 import LoadingComponent from '../components/Loading'
 import { useTranslation } from 'react-i18next'
 
@@ -548,7 +549,7 @@ const UserActivites = () => {
         options: circleUsers.map(u => ({
           value: u.userId,
           label: u.displayName,
-          avatar: u.image,
+          avatar: resolvePhotoURL(u.image),
         })),
       },
       ...clientFilterDefs,

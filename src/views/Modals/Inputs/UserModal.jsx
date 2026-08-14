@@ -1,6 +1,7 @@
 import { Avatar, Box, List, ListItem, Typography } from '@mui/joy'
 import ModalActions from '../../../components/common/ModalActions'
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
+import { resolvePhotoURL } from '../../../utils/Helpers'
 import { useTranslation } from 'react-i18next'
 
 const UserModal = ({ isOpen, performers = [], onSelect, onClose }) => {
@@ -36,7 +37,7 @@ const UserModal = ({ isOpen, performers = [], onSelect, onClose }) => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Avatar
                 size='lg'
-                src={user.image || user.avatar}
+                src={resolvePhotoURL(user.image || user.avatar)}
                 alt={user.displayName || user.name}
               />
               <Typography>{user.displayName || user.name}</Typography>

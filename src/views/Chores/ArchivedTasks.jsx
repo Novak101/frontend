@@ -39,6 +39,7 @@ import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
 import { commandQueue, CommandType } from '../../utils/CommandQueue'
 import { DeleteChore, GetArchivedChores } from '../../utils/Fetcher'
+import { resolvePhotoURL } from '../../utils/Helpers'
 import { offlineDB } from '../../utils/OfflineDB'
 import { isOfflineFeatureEnabled } from '../../utils/OfflineFeatureToggle'
 import Priorities from '../../utils/Priorities'
@@ -138,7 +139,7 @@ const ArchivedTasks = () => {
         options: performers.map(p => ({
           value: p.userId,
           label: p.displayName,
-          avatar: p.image,
+          avatar: resolvePhotoURL(p.image),
         })),
         filterFn: (item, values) => values.includes(item.assignedTo),
       },

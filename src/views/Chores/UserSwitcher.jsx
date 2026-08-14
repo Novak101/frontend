@@ -4,6 +4,7 @@ import { Avatar, Box, Button, Sheet, Typography } from '@mui/joy'
 import { useEffect, useState } from 'react'
 import { useImpersonateUser } from '../../contexts/ImpersonateUserContext'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
+import { resolvePhotoURL } from '../../utils/Helpers'
 import UserModal from '../Modals/Inputs/UserModal'
 const UserSwitcher = () => {
   const { 
@@ -133,7 +134,9 @@ const UserSwitcher = () => {
                 borderRadius: '50%',
                 display: 'flex',
               }}
-              src={impersonatedUser?.image || impersonatedUser?.avatar}
+              src={resolvePhotoURL(
+                impersonatedUser?.image || impersonatedUser?.avatar,
+              )}
               alt={impersonatedUser?.displayName || impersonatedUser?.name}
             />
           </Box>

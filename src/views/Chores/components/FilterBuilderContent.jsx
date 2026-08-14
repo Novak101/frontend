@@ -9,6 +9,7 @@ import {
   TaskAlt,
 } from '@mui/icons-material'
 import { Avatar, Box, Chip, Divider, Input, Typography } from '@mui/joy'
+import { resolvePhotoURL } from '../../../utils/Helpers'
 import Priorities from '../../../utils/Priorities'
 
 export const DUE_DATE_OPTIONS = [
@@ -239,7 +240,7 @@ const FilterBuilderContent = ({
                   <Check sx={{ fontSize: 14 }} />
                 ) : (
                   <Avatar
-                    src={m.image}
+                    src={resolvePhotoURL(m.image)}
                     alt={m.displayName}
                     sx={{ '--Avatar-size': '20px' }}
                   />

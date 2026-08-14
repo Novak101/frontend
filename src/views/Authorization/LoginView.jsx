@@ -21,6 +21,7 @@ import { useUserProfile } from '../../queries/UserQueries.jsx'
 import { useNotification } from '../../service/NotificationProvider'
 import { apiClient } from '../../utils/ApiClient'
 import { getPendingInvite } from '../../utils/PendingInvite'
+import { resolvePhotoURL } from '../../utils/Helpers'
 import { saveTokens } from '../../utils/TokenStorage'
 import { buildChildUsername, getUserDisplayInfo } from '../../utils/UserHelpers'
 import {
@@ -459,7 +460,7 @@ const LoginView = () => {
           }}
         >
           <Avatar
-            src={userProfile?.image}
+            src={resolvePhotoURL(userProfile?.image)}
             alt={displayName}
             sx={{ width: 88, height: 88 }}
           />

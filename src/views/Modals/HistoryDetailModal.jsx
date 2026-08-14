@@ -21,6 +21,7 @@ import ModalActions from '../../components/common/ModalActions'
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { useResponsiveModal } from '../../hooks/useResponsiveModal'
 import { TASK_COLOR } from '../../utils/Colors.jsx'
+import { resolvePhotoURL } from '../../utils/Helpers'
 import RichTextEditor from '../components/RichTextEditor.jsx'
 
 const STATUS_CONFIG = {
@@ -219,7 +220,7 @@ function HistoryDetailModal({ config }) {
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
               <Avatar
-                src={performer.image}
+                src={resolvePhotoURL(performer.image)}
                 alt={performer.displayName}
                 size='sm'
                 sx={{ width: 20, height: 20 }}

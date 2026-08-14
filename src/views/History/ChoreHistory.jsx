@@ -46,6 +46,7 @@ import {
 import { useCircleMembers } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
 import { ChoreHistoryStatus } from '../../utils/Chores'
+import { resolvePhotoURL } from '../../utils/Helpers'
 import LoadingComponent from '../components/Loading'
 import EditHistoryModal from '../Modals/EditHistoryModal'
 import HistoryDetailModal from '../Modals/HistoryDetailModal'
@@ -154,7 +155,7 @@ const ChoreHistory = () => {
         options: performers.map(p => ({
           value: p.userId,
           label: p.displayName,
-          avatar: p.image,
+          avatar: resolvePhotoURL(p.image),
         })),
         filterFn: (item, values) => values.includes(item.completedBy),
       },
