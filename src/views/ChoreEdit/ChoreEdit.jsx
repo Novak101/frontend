@@ -564,11 +564,13 @@ const ChoreEdit = () => {
 
       setChore(data.res)
       setName(data.res.name ? data.res.name : '')
-      // Editing an existing chore: whatever icon it already has (including
-      // none) is a deliberate prior choice, not something to auto-guess
-      // over as soon as the name finishes loading.
+      // Editing an existing chore: if it already has an icon, that's a
+      // deliberate prior choice -- lock out auto-select so loading the name
+      // doesn't clobber it. But if it has no icon (e.g. created through a
+      // quick-add path that never set one), leave auto-select enabled so it
+      // still gets a suggestion instead of staying blank forever.
       setIcon(data.res.icon ? data.res.icon : '')
-      setIconTouched(true)
+      setIconTouched(!!data.res.icon)
       setDescription(data.res.description ? data.res.description : '')
       setAssignableTo(data.res.assignees ? data.res.assignees : [])
       setAnyone((data.res.assignees?.length || 0) === 0)
