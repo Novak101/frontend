@@ -147,6 +147,10 @@
     "vite": "^5.2.13"
   },
   "allowScripts": {
-    "tesseract.js@7.0.0": true
+    "tesseract.js@7.0.0": true,
+    "esbuild": true,
+    "@swc/core": true,
+    "sharp": true,
+    "core-js@3.50.0": true
   }
 }

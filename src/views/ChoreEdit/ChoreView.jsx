@@ -18,6 +18,7 @@ import {
   Unarchive,
 } from '@mui/icons-material'
 import {
+  Avatar,
   Box,
   Button,
   Card,
@@ -182,6 +183,8 @@ const ChoreView = () => {
           size: 6,
           icon: <PeopleAlt />,
           title: t('choreView.assignment'),
+          avatarSrc: performers.find(p => p.userId === chore.assignedTo)
+            ?.image,
           text: `${t('choreView.assigned')}: ${
             performers.find(p => p.userId === chore.assignedTo)?.displayName ||
             t('choreView.na')
@@ -758,12 +761,23 @@ const ChoreView = () => {
                     </Typography>
                   </Box>
                   <Box>
-                    <Typography
-                      level='body-sm'
-                      sx={{ color: 'text.secondary', lineHeight: 1.5 }}
+                    <Box
+                      sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}
                     >
-                      {card.text}
-                    </Typography>
+                      {card.avatarSrc && (
+                        <Avatar
+                          src={card.avatarSrc}
+                          size='sm'
+                          sx={{ width: 20, height: 20 }}
+                        />
+                      )}
+                      <Typography
+                        level='body-sm'
+                        sx={{ color: 'text.secondary', lineHeight: 1.5 }}
+                      >
+                        {card.text}
+                      </Typography>
+                    </Box>
                     <Typography
                       level='body-sm'
                       sx={{ color: 'text.secondary', lineHeight: 1.5 }}

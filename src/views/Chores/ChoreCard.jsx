@@ -34,6 +34,7 @@ import {
 import { notInCompletionWindow } from '../../utils/Chores.jsx'
 import { getTextColorFromBackgroundColor } from '../../utils/Colors.jsx'
 import Priorities from '../../utils/Priorities'
+import { ICON_COMPONENTS } from '../../constants/choreIcons'
 import ChoreActionMenu from '../components/ChoreActionMenu'
 import PendingBadge from '../components/PendingBadge'
 const ChoreCard = ({
@@ -221,7 +222,14 @@ const ChoreCard = ({
               {/* Box in top right with Chip showing next due date  */}
               <Box display='flex' justifyContent='start' alignItems='center'>
                 <Avatar sx={{ mr: 1, fontSize: 22 }}>
-                  {Array.from(chore.name)[0]}
+                  {(() => {
+                    const ChoreIcon = ICON_COMPONENTS[chore.icon]
+                    return ChoreIcon ? (
+                      <ChoreIcon sx={{ fontSize: 18 }} />
+                    ) : (
+                      Array.from(chore.name)[0]
+                    )
+                  })()}
                 </Avatar>
                 <Box display='flex' flexDirection='column'>
                   <Typography level='title-md'>

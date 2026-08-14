@@ -53,6 +53,7 @@ import {
 } from '../../queries/ChoreQueries.jsx'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import { useNotification } from '../../service/NotificationProvider'
+import { ICON_COMPONENTS, matchIconForTitle } from '../../constants/choreIcons'
 import { getTextColorFromBackgroundColor } from '../../utils/Colors.jsx'
 import {
   DeleteChoreAttachment,
@@ -74,6 +75,7 @@ import RichTextEditor from '../components/RichTextEditor.jsx'
 import SubTasks from '../components/SubTask.jsx'
 import { useLabels } from '../Labels/LabelQueries'
 import AttachmentViewerModal from '../Modals/Inputs/AttachmentViewerModal'
+import ChoreIconPickerModal from '../Modals/Inputs/ChoreIconPickerModal'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import LabelModal from '../Modals/Inputs/LabelModal'
 import { useProjects } from '../Projects/ProjectQueries'
@@ -103,6 +105,17 @@ const ChoreEdit = () => {
   const { choreId } = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
   const [name, setName] = useState('')
+  const [icon, setIcon] = useState('')
+  const [iconTouched, setIconTouched] = useState(false)
+  const [iconPickerOpen, setIconPickerOpen] = useState(false)
+  // Auto-select an icon from the title as the user types, unless they've
+  // manually picked one via the picker (iconTouched) -- manual choice
+  // always wins over the heuristic.
+  useEffect(() => {
+    if (iconTouched) return
+    const suggested = matchIconForTitle(name)
+    if (suggested) setIcon(suggested)
+  }, [name, iconTouched])
   const [description, setDescription] = useState('')
   const [confirmModelConfig, setConfirmModelConfig] = useState({})
   const [anyone, setAnyone] = useState(false)
@@ -371,6 +384,7 @@ const ChoreEdit = () => {
     const chore = {
       id: Number(newChoreId),
       name: name,
+      icon: icon,
       description: description,
       assignees: assignees,
       dueDate: dueDate ? new Date(dueDate).toISOString() : null,
@@ -550,6 +564,11 @@ const ChoreEdit = () => {
 
       setChore(data.res)
       setName(data.res.name ? data.res.name : '')
+      // Editing an existing chore: whatever icon it already has (including
+      // none) is a deliberate prior choice, not something to auto-guess
+      // over as soon as the name finishes loading.
+      setIcon(data.res.icon ? data.res.icon : '')
+      setIconTouched(true)
       setDescription(data.res.description ? data.res.description : '')
       setAssignableTo(data.res.assignees ? data.res.assignees : [])
       setAnyone((data.res.assignees?.length || 0) === 0)
@@ -795,6 +814,30 @@ const ChoreEdit = () => {
             </Typography>
             <Input value={name} onChange={e => setName(e.target.value)} />
             <FormHelperText error>{errors.name}</FormHelperText>
+          </FormControl>
+        </Box>
+
+        <Box mb={3}>
+          <FormControl>
+            <Typography level='h4'>Icon</Typography>
+            <Typography level='body-md'>
+              Auto-picked from the name -- tap to search and choose your own.
+            </Typography>
+            <Button
+              variant='outlined'
+              onClick={() => setIconPickerOpen(true)}
+              startDecorator={
+                <Avatar size='sm' sx={{ width: 24, height: 24 }}>
+                  {(() => {
+                    const ChoreIcon = ICON_COMPONENTS[icon]
+                    return ChoreIcon ? <ChoreIcon sx={{ fontSize: 14 }} /> : null
+                  })()}
+                </Avatar>
+              }
+              sx={{ justifyContent: 'flex-start', alignSelf: 'flex-start' }}
+            >
+              {icon || 'Select Icon'}
+            </Button>
           </FormControl>
         </Box>
 
@@ -2013,6 +2056,15 @@ const ChoreEdit = () => {
       </Sheet>
       <AttachmentViewerModal config={attachmentViewerConfig} />
       <ConfirmationModal config={confirmModelConfig} />
+      <ChoreIconPickerModal
+        isOpen={iconPickerOpen}
+        onClose={() => setIconPickerOpen(false)}
+        onSelect={selected => {
+          setIcon(selected)
+          setIconTouched(true)
+        }}
+        currentIcon={icon}
+      />
       {addLabelModalOpen && (
         <LabelModal
           isOpen={addLabelModalOpen}
