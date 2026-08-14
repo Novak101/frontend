@@ -21,6 +21,7 @@ import ModalActions from '../../components/common/ModalActions'
 import { useDocumentScanner } from '../../hooks/useDocumentScanner'
 import { useFileUpload } from '../../hooks/useFileUpload'
 import { useResponsiveModal } from '../../hooks/useResponsiveModal'
+import { matchIconForTitle } from '../../constants/choreIcons'
 import { useCreateChore } from '../../queries/ChoreQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import { localAIService } from '../../service/LocalAIService'
@@ -1073,6 +1074,7 @@ const TaskInput = ({ initialMode, isModalOpen, onChoreUpdate, onClose }) => {
       projectId: projectId === 'default' ? null : projectId,
       draftId: draftId,
       source: taskSourceRef.current,
+      icon: matchIconForTitle(taskTitle) || '',
     }
 
     // Reminders are a Plus feature and only make sense when the user kept at

@@ -1,5 +1,6 @@
 import * as chrono from 'chrono-node'
 import moment from 'moment'
+import { matchIconForTitle } from '../../../constants/choreIcons'
 import { isPlusAccount } from '../../../utils/Helpers'
 import { generateUUID } from '../../../utils/UUID'
 import {
@@ -182,6 +183,7 @@ export const buildChorePayload = (
     subTasks: null,
     projectId: projectId === 'default' ? null : projectId,
     draftId: generateUUID(),
+    icon: matchIconForTitle(parsed.title) || '',
   }
 
   // A per-task override from the voice card wins over the account default;
