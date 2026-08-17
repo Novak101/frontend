@@ -17,8 +17,13 @@ import {
   Card,
   Checkbox,
   Chip,
+  Dropdown,
   Grid,
   IconButton,
+  ListItemDecorator,
+  Menu,
+  MenuButton,
+  MenuItem,
   Typography,
 } from '@mui/joy'
 
@@ -236,32 +241,73 @@ const ChoreCard = ({
                   <Typography level='title-md'>
                     {getName(chore.name)}
                   </Typography>
-                  {chore.assignedTo && (
-                    <Box display='flex' alignItems='center' gap={0.5}>
-                      <Chip
-                        variant='outlined'
-                        startDecorator={
-                          <Avatar
-                            src={resolvePhotoURL(
-                              performers.find(
+                  {(chore.assignedTo || chore.assignedTo === null) && (
+                    <Box
+                      display='flex'
+                      alignItems='center'
+                      gap={0.5}
+                      onClick={e => e.stopPropagation()}
+                    >
+                      <Dropdown>
+                        <MenuButton
+                          slots={{ root: Chip }}
+                          slotProps={{ root: { variant: 'outlined' } }}
+                          startDecorator={
+                            chore.assignedTo ? (
+                              <Avatar
+                                size='sm'
+                                src={resolvePhotoURL(
+                                  performers.find(
+                                    p => p.userId === chore.assignedTo,
+                                  )?.image,
+                                )}
+                              />
+                            ) : (
+                              <Group />
+                            )
+                          }
+                        >
+                          {chore.assignedTo
+                            ? performers.find(
                                 p => p.userId === chore.assignedTo,
-                              )?.image,
-                            )}
-                          />
-                        }
-                      >
-                        {
-                          performers.find(p => p.userId === chore.assignedTo)
-                            ?.displayName
-                        }
-                      </Chip>
-                    </Box>
-                  )}
-                  {chore.assignedTo === null && (
-                    <Box display='flex' alignItems='center' gap={0.5}>
-                      <Chip variant='outlined' startDecorator={<Group />}>
-                        Anyone
-                      </Chip>
+                              )?.displayName
+                            : 'Anyone'}
+                        </MenuButton>
+                        <Menu placement='bottom-start' size='sm'>
+                          <MenuItem
+                            selected={chore.assignedTo === null}
+                            onClick={() =>
+                              onAction('quickAssign', chore, {
+                                assignee: null,
+                              })
+                            }
+                          >
+                            <ListItemDecorator>
+                              <Group />
+                            </ListItemDecorator>
+                            Anyone
+                          </MenuItem>
+                          {performers.map(performer => (
+                            <MenuItem
+                              key={performer.userId}
+                              selected={performer.userId === chore.assignedTo}
+                              onClick={() =>
+                                onAction('quickAssign', chore, {
+                                  assignee: performer,
+                                })
+                              }
+                            >
+                              <ListItemDecorator>
+                                <Avatar
+                                  size='sm'
+                                  src={resolvePhotoURL(performer.image)}
+                                />
+                              </ListItemDecorator>
+                              {performer.displayName}
+                            </MenuItem>
+                          ))}
+                        </Menu>
+                      </Dropdown>
                     </Box>
                   )}
                   <Box key={`${chore.id}-labels`}>
