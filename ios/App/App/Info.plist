@@ -58,6 +58,19 @@
 	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
+		<!--
+			Self-hosted Donetick instances are frequently reached over plain HTTP
+			(e.g. a home server behind a Tailscale hostname, which isn't "local
+			network" as far as ATS is concerned even though the traffic never
+			leaves a private tunnel). Without this, iOS silently blocks any
+			cleartext request that NSAllowsLocalNetworking doesn't cover -- JSON
+			API calls still went through (Capacitor's native HTTP bridge is more
+			lenient), but plain <img> loads like profile photos were dropped with
+			no visible error. Mirrors the Android side's cleartextTrafficPermitted
+			in network_security_config.xml (donetick/donetick#727).
+		-->
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
