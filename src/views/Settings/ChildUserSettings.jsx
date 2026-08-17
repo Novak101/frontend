@@ -24,7 +24,7 @@ import {
   DeleteChildUser,
   UpdateChildPassword,
 } from '../../utils/Fetcher'
-import { isPlusAccount } from '../../utils/Helpers'
+import { isPlusAccount, resolvePhotoURL } from '../../utils/Helpers'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import CreateChildUserModal from '../Modals/Inputs/CreateChildUserModal'
 import PasswordChangeModal from '../Modals/Inputs/PasswordChangeModal'
@@ -202,7 +202,11 @@ const ChildUserSettings = () => {
               <Card key={child.id} variant='outlined'>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Avatar size='lg'>
+                    <Avatar
+                      size='lg'
+                      src={resolvePhotoURL(child.image)}
+                      alt={child.displayName || child.username}
+                    >
                       {child.displayName?.[0]?.toUpperCase() ||
                         child.username?.[0]?.toUpperCase()}
                     </Avatar>
