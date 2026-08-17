@@ -10,12 +10,17 @@ import {
   Typography,
 } from '@mui/joy'
 import { useEffect, useState } from 'react'
+
 import ModalActions from '../../../components/common/ModalActions'
+import { matchIconForTitle } from '../../../constants/choreIcons'
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 import PROJECT_COLORS, {
   getTextColorFromBackgroundColor,
 } from '../../../utils/Colors'
-import PROJECT_ICONS, { getIconComponent } from '../../../utils/ProjectIcons'
+import PROJECT_ICONS, {
+  DEFAULT_PROJECT_ICON,
+  getIconComponent,
+} from '../../../utils/ProjectIcons'
 import {
   useCreateProject,
   useUpdateProject,
@@ -27,7 +32,8 @@ const ProjectModal = ({ isOpen, onClose, onSave, project }) => {
   const [projectName, setProjectName] = useState('')
   const [projectDescription, setProjectDescription] = useState('')
   const [projectColor, setProjectColor] = useState(PROJECT_COLORS[0].value)
-  const [projectIcon, setProjectIcon] = useState(PROJECT_ICONS[0].value)
+  const [projectIcon, setProjectIcon] = useState(DEFAULT_PROJECT_ICON)
+  const [iconTouched, setIconTouched] = useState(false)
   const [error, setError] = useState('')
   const [isIconPickerOpen, setIsIconPickerOpen] = useState(false)
 
@@ -42,17 +48,28 @@ const ProjectModal = ({ isOpen, onClose, onSave, project }) => {
         setProjectName(project.name || '')
         setProjectDescription(project.description || '')
         setProjectColor(project.color || PROJECT_COLORS[0].value)
-        setProjectIcon(project.icon || PROJECT_ICONS[0].value)
+        setProjectIcon(project.icon || DEFAULT_PROJECT_ICON)
+        setIconTouched(!!project.icon)
       } else {
         // Creating new project
         setProjectName('')
         setProjectDescription('')
         setProjectColor(PROJECT_COLORS[0].value)
-        setProjectIcon(PROJECT_ICONS[0].value)
+        setProjectIcon(DEFAULT_PROJECT_ICON)
+        setIconTouched(false)
       }
       setError('')
     }
   }, [isOpen, project])
+
+  // Auto-select an icon from the project name as the user types, unless
+  // they've manually picked one via the picker (iconTouched) -- manual
+  // choice always wins over the heuristic. Same pattern as task/chore icons.
+  useEffect(() => {
+    if (!isOpen || iconTouched) return
+    const suggested = matchIconForTitle(projectName)
+    if (suggested) setProjectIcon(suggested)
+  }, [projectName, iconTouched, isOpen])
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -114,6 +131,7 @@ const ProjectModal = ({ isOpen, onClose, onSave, project }) => {
 
   const handleIconSelect = iconValue => {
     setProjectIcon(iconValue)
+    setIconTouched(true)
     setIsIconPickerOpen(false)
   }
 
@@ -209,7 +227,7 @@ const ProjectModal = ({ isOpen, onClose, onSave, project }) => {
               }
               sx={{ justifyContent: 'flex-start' }}
             >
-              {PROJECT_ICONS.find(icon => icon.value === projectIcon)?.name ||
+              {PROJECT_ICONS.find(icon => icon.name === projectIcon)?.label ||
                 'Select Icon'}
             </Button>
           </FormControl>

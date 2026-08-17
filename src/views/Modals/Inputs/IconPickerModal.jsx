@@ -1,22 +1,39 @@
-import { Avatar, Box, FormControl, FormLabel, Grid, Typography } from '@mui/joy'
-import ModalActions from '../../../components/common/ModalActions'
-import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
-import { getTextColorFromBackgroundColor } from '../../../utils/Colors'
-import PROJECT_ICONS from '../../../utils/ProjectIcons'
+import {
+  Avatar,
+  Box,
+  FormControl,
+  FormLabel,
+  Grid,
+  Input,
+  Typography,
+} from '@mui/joy'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import ModalActions from '../../../components/common/ModalActions'
+import { searchChoreIcons } from '../../../constants/choreIcons'
+import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
+import { getTextColorFromBackgroundColor } from '../../../utils/Colors'
+import { getIconComponent } from '../../../utils/ProjectIcons'
+
 const IconPickerModal = ({
+  currentIcon,
   isOpen,
   onClose,
   onSelect,
-  currentIcon,
   projectColor,
 }) => {
   const { t } = useTranslation('projects')
   const { ResponsiveModal } = useResponsiveModal()
+  const [query, setQuery] = useState('')
+  const results = searchChoreIcons(query)
 
-  const handleIconClick = iconValue => {
-    onSelect(iconValue)
+  useEffect(() => {
+    if (isOpen) setQuery('')
+  }, [isOpen])
+
+  const handleIconClick = iconName => {
+    onSelect(iconName)
     onClose()
   }
 
@@ -29,21 +46,35 @@ const IconPickerModal = ({
       unmountDelay={250}
       title={t('iconPicker.chooseIcon')}
       footer={
-        <ModalActions secondary={{ label: t('common:cancel'), onClick: onClose }} />
+        <ModalActions
+          secondary={{ label: t('common:cancel'), onClick: onClose }}
+        />
       }
     >
+      <FormControl sx={{ mb: 2 }}>
+        <FormLabel>{t('iconPicker.searchIcons')}</FormLabel>
+        <Input
+          autoFocus
+          placeholder={t('iconPicker.searchPlaceholder')}
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+        />
+      </FormControl>
+
       <FormControl>
-        <FormLabel>{t('iconPicker.availableIcons')}</FormLabel>
+        <FormLabel>
+          {t('iconPicker.availableIcons')} ({results.length})
+        </FormLabel>
         <Grid
           container
           spacing={1}
           sx={{ maxHeight: '300px', overflowY: 'auto', mb: 2 }}
         >
-          {PROJECT_ICONS.map(iconData => {
-            const IconComponent = iconData.icon
-            const isCurrentIcon = currentIcon === iconData.value
+          {results.map(iconData => {
+            const IconComponent = getIconComponent(iconData.name)
+            const isCurrentIcon = currentIcon === iconData.name
             return (
-              <Grid key={iconData.value} xs={3} sm={2}>
+              <Grid key={iconData.name} xs={3} sm={2}>
                 <Box
                   sx={{
                     display: 'flex',
@@ -61,7 +92,7 @@ const IconPickerModal = ({
                     },
                     transition: 'border-color 0.2s',
                   }}
-                  onClick={() => handleIconClick(iconData.value)}
+                  onClick={() => handleIconClick(iconData.name)}
                 >
                   <Avatar
                     size='sm'
@@ -87,13 +118,18 @@ const IconPickerModal = ({
                       lineHeight: 1.2,
                     }}
                   >
-                    {t(`icons.${iconData.key}`)}
+                    {iconData.label}
                   </Typography>
                 </Box>
               </Grid>
             )
           })}
         </Grid>
+        {results.length === 0 && (
+          <Typography level='body-sm' sx={{ textAlign: 'center', py: 2 }}>
+            {t('iconPicker.noResults', { query })}
+          </Typography>
+        )}
       </FormControl>
     </ResponsiveModal>
   )

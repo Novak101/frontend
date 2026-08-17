@@ -1,60 +1,40 @@
-import {
-  AccountBalance,
-  Book,
-  Build,
+import AccountBalance from '@mui/icons-material/AccountBalance'
+import BusinessCenter from '@mui/icons-material/BusinessCenter'
+import Code from '@mui/icons-material/Code'
+import FolderOpen from '@mui/icons-material/FolderOpen'
+import Games from '@mui/icons-material/Games'
+import Home from '@mui/icons-material/Home'
+import PhotoCamera from '@mui/icons-material/PhotoCamera'
+import Restaurant from '@mui/icons-material/Restaurant'
+import Science from '@mui/icons-material/Science'
+import Yard from '@mui/icons-material/Yard'
+
+import { CHORE_ICONS, ICON_COMPONENTS } from '../constants/choreIcons'
+
+// Projects use the same icon library, search, and name-based auto-select as
+// tasks/chores (see constants/choreIcons.js) so the picker behaves
+// identically for both. These extra components only cover icon names that
+// were selectable in the old, smaller project icon list but aren't part of
+// CHORE_ICONS ('Garden' never matched a real @mui/icons-material export --
+// it's mapped to Yard here), so existing projects keep rendering their icon.
+const LEGACY_ICON_COMPONENTS = {
+  FolderOpen,
+  Home,
   BusinessCenter,
   Code,
-  Computer,
-  DirectionsCar,
-  FitnessCenter,
-  Flight,
-  FolderOpen,
-  Games,
-  Home,
-  LocalHospital,
-  MusicNote,
-  Palette,
-  Pets,
-  PhotoCamera,
   Restaurant,
-  School,
+  PhotoCamera,
+  Games,
   Science,
-  ShoppingCart,
-  SportsSoccer,
-  Work,
-  Yard,
-} from '@mui/icons-material'
+  AccountBalance,
+  Garden: Yard,
+}
 
-const PROJECT_ICONS = [
-  { name: 'Folder', icon: FolderOpen, value: 'FolderOpen' },
-  { name: 'Work', icon: Work, value: 'Work' },
-  { name: 'Home', icon: Home, value: 'Home' },
-  { name: 'School', icon: School, value: 'School' },
-  { name: 'Business', icon: BusinessCenter, value: 'BusinessCenter' },
-  { name: 'Code', icon: Code, value: 'Code' },
-  { name: 'Build', icon: Build, value: 'Build' },
-  { name: 'Design', icon: Palette, value: 'Palette' },
-  { name: 'Sports', icon: SportsSoccer, value: 'SportsSoccer' },
-  { name: 'Fitness', icon: FitnessCenter, value: 'FitnessCenter' },
-  { name: 'Shopping', icon: ShoppingCart, value: 'ShoppingCart' },
-  { name: 'Food', icon: Restaurant, value: 'Restaurant' },
-  { name: 'Travel', icon: Flight, value: 'Flight' },
-  { name: 'Study', icon: Book, value: 'Book' },
-  { name: 'Music', icon: MusicNote, value: 'MusicNote' },
-  { name: 'Photo', icon: PhotoCamera, value: 'PhotoCamera' },
-  { name: 'Games', icon: Games, value: 'Games' },
-  { name: 'Science', icon: Science, value: 'Science' },
-  { name: 'Finance', icon: AccountBalance, value: 'AccountBalance' },
-  { name: 'Health', icon: LocalHospital, value: 'LocalHospital' },
-  { name: 'Auto', icon: DirectionsCar, value: 'DirectionsCar' },
-  { name: 'Pets', icon: Pets, value: 'Pets' },
-  { name: 'Garden', icon: Yard, value: 'Garden' },
-  { name: 'Tech', icon: Computer, value: 'Computer' },
-]
+export const DEFAULT_PROJECT_ICON = 'FolderOpen'
+
+const PROJECT_ICONS = CHORE_ICONS
 
 export default PROJECT_ICONS
 
-export const getIconComponent = iconValue => {
-  const iconData = PROJECT_ICONS.find(icon => icon.value === iconValue)
-  return iconData ? iconData.icon : FolderOpen
-}
+export const getIconComponent = iconValue =>
+  ICON_COMPONENTS[iconValue] || LEGACY_ICON_COMPONENTS[iconValue] || FolderOpen
