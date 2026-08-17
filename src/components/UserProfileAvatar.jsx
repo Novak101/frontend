@@ -20,7 +20,6 @@ import {
   Menu,
   MenuButton,
   MenuItem,
-  Sheet,
   Typography,
   useColorScheme,
 } from '@mui/joy'
@@ -186,7 +185,17 @@ const UserProfileAvatar = () => {
             borderRadius: 'var(--joy-radius-md)',
           }}
         >
-          <Sheet sx={{ p: 2, borderRadius: 'var(--joy-radius-sm)', mb: 1 }}>
+          <MenuItem
+            onClick={() => navigate('/settings/profile')}
+            sx={{
+              p: 2,
+              mb: 1,
+              borderRadius: 'var(--joy-radius-sm)',
+              '&:hover': {
+                backgroundColor: 'var(--joy-palette-neutral-softHoverBg)',
+              },
+            }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Avatar
                 src={resolvePhotoURL(currentUser?.image || currentUser?.avatar)}
@@ -271,7 +280,7 @@ const UserProfileAvatar = () => {
                 )}
               </Box>
             </Box>
-          </Sheet>
+          </MenuItem>
 
           {isAdmin && (
             <>
