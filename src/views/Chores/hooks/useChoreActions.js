@@ -692,6 +692,66 @@ export const useChoreActions = ({
           break
         }
 
+        case 'quickAssign': {
+          const assignee = extraData?.assignee ?? null
+          // The lightweight assignee endpoint only allows switching among a
+          // task's existing eligible-assignee pool (chore.assignees). "Anyone"
+          // and anyone outside that pool need a full update, which also
+          // grows the pool so a genuine quick-pick actually works instead of
+          // failing with "Assignee not found in assignees".
+          const isEligible =
+            assignee &&
+            (chore.assignees || []).some(a => a.userId === assignee.userId)
+          try {
+            if (isEligible) {
+              const response = await UpdateChoreAssignee(
+                chore.id,
+                assignee.userId,
+              )
+              if (response.ok) {
+                const data = await response.json()
+                updateChoreInState(data.res, 'assigned')
+              } else {
+                showError({
+                  title: 'Failed to update assignee',
+                  message: 'Unable to reassign this task',
+                })
+                break
+              }
+            } else {
+              const updatedChore = {
+                ...chore,
+                assignedTo: assignee ? assignee.userId : null,
+                assignees: assignee
+                  ? [...(chore.assignees || []), { userId: assignee.userId }]
+                  : [],
+              }
+              const response = await SaveChore(updatedChore)
+              if (response.ok) {
+                updateChoreInState(updatedChore, 'assigned')
+              } else {
+                showError({
+                  title: 'Failed to update assignee',
+                  message: 'Unable to reassign this task',
+                })
+                break
+              }
+            }
+            showSuccess({
+              title: 'Assignee updated',
+              message: assignee
+                ? `Assigned to ${assignee.displayName}.`
+                : 'Assigned to anyone.',
+            })
+          } catch (error) {
+            showError({
+              title: 'Failed to update assignee',
+              message: error?.message || 'Unable to reassign this task',
+            })
+          }
+          break
+        }
+
         case 'completeWithNote':
         case 'completeWithPastDate':
         case 'changeAssignee':
