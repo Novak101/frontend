@@ -984,6 +984,27 @@ const TrackFilterUsage = id => {
   })
 }
 
+const EnableFilterShare = id => {
+  return Fetch(`/filters/${id}/share/enable`, {
+    method: 'POST',
+    headers: HEADERS(),
+  })
+}
+
+const DisableFilterShare = id => {
+  return Fetch(`/filters/${id}/share/disable`, {
+    method: 'POST',
+    headers: HEADERS(),
+  })
+}
+
+const RegenerateFilterShare = id => {
+  return Fetch(`/filters/${id}/share/regenerate`, {
+    method: 'POST',
+    headers: HEADERS(),
+  })
+}
+
 export {
   AcceptCircleMemberRequest,
   DeleteChoreAttachment,
@@ -1019,7 +1040,9 @@ export {
   DeleteThing,
   DeleteTimeSession,
   DeleteUser,
+  DisableFilterShare,
   DisableMFA,
+  EnableFilterShare,
   GetAllCircleMembers,
   GetAllUsers,
   GetArchivedChores,
@@ -1061,6 +1084,7 @@ export {
   RedeemPoints,
   RefreshToken,
   RegenerateBackupCodes,
+  RegenerateFilterShare,
   RegisterDeviceToken,
   RejectChore,
   ResetChoreTimer,

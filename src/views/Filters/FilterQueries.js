@@ -4,10 +4,13 @@ import { track } from '../../analytics'
 import {
   CreateFilter,
   DeleteFilter,
+  DisableFilterShare,
+  EnableFilterShare,
   GetFilterById,
   GetFilters,
   GetFiltersByUsage,
   GetPinnedFilters,
+  RegenerateFilterShare,
   ToggleFilterPin,
   UpdateFilter,
 } from '../../utils/Fetcher'
@@ -252,5 +255,75 @@ export const useToggleFilterPin = () => {
     onError: error => {
       console.error('Toggle filter pin mutation failed:', error)
     },
+  })
+}
+
+// Shared cache-update logic for the three share mutations below - all three
+// return the updated filter under `res`, same shape as useToggleFilterPin.
+const useUpdateFilterCache = () => {
+  const queryClient = useQueryClient()
+  return updatedFilter => {
+    queryClient.setQueryData(['filters'], oldFilters => {
+      if (!oldFilters) return [updatedFilter]
+      return oldFilters.map(filter =>
+        filter.id === updatedFilter.id ? updatedFilter : filter,
+      )
+    })
+    queryClient.setQueryData(['filters', updatedFilter.id], updatedFilter)
+    queryClient.invalidateQueries(['filters'])
+  }
+}
+
+// Mutation hook for enabling a filter's share link
+export const useEnableFilterShare = () => {
+  const updateCache = useUpdateFilterCache()
+
+  return useMutation({
+    mutationFn: async filterId => {
+      const response = await EnableFilterShare(filterId)
+      if (response.ok) {
+        const data = await response.json()
+        return data.res || data
+      }
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Failed to enable share link')
+    },
+    onSuccess: updateCache,
+  })
+}
+
+// Mutation hook for disabling a filter's share link
+export const useDisableFilterShare = () => {
+  const updateCache = useUpdateFilterCache()
+
+  return useMutation({
+    mutationFn: async filterId => {
+      const response = await DisableFilterShare(filterId)
+      if (response.ok) {
+        const data = await response.json()
+        return data.res || data
+      }
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Failed to disable share link')
+    },
+    onSuccess: updateCache,
+  })
+}
+
+// Mutation hook for regenerating a filter's share token
+export const useRegenerateFilterShare = () => {
+  const updateCache = useUpdateFilterCache()
+
+  return useMutation({
+    mutationFn: async filterId => {
+      const response = await RegenerateFilterShare(filterId)
+      if (response.ok) {
+        const data = await response.json()
+        return data.res || data
+      }
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Failed to regenerate share link')
+    },
+    onSuccess: updateCache,
   })
 }

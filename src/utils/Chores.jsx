@@ -309,19 +309,15 @@ export const ChoresGrouper = (groupBy, chores, filter, performers = []) => {
       performers.forEach(p => {
         performerNames[p.userId] = p.displayName || p.username
       })
+      // A chore's `assignees` is its rotation pool (everyone eligible), not
+      // who currently owns it - grouping by that pool duplicated a chore
+      // across every eligible person. `assignedTo` is the single "Currently
+      // Assigned To" person (the "who is assigned the next due?" field), so
+      // that's the only field that should decide the group.
       chores.forEach(chore => {
-        const assigneeIds = chore.assignees?.length
-          ? chore.assignees.map(a => a.userId)
-          : [chore.assignedTo].filter(Boolean)
-        if (assigneeIds.length === 0) {
-          groupRaw['unassigned'] ??= []
-          groupRaw['unassigned'].push(chore)
-          return
-        }
-        assigneeIds.forEach(userId => {
-          groupRaw[userId] ??= []
-          groupRaw[userId].push(chore)
-        })
+        const key = chore.assignedTo || 'unassigned'
+        groupRaw[key] ??= []
+        groupRaw[key].push(chore)
       })
       groups = Object.keys(groupRaw).map(key => ({
         name:

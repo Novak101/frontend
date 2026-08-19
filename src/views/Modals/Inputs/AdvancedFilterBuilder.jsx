@@ -11,6 +11,7 @@ import FilterBuilderContent, {
 import { FILTER_COLORS } from '../../../utils/Colors'
 import { applyFilter } from '../../../utils/FilterEngine'
 import { useFilters } from '../../Filters/FilterQueries'
+import ShareFilterSection from '../../Filters/ShareFilterSection'
 import { useTranslation } from 'react-i18next'
 
 const EMPTY_FILTERS = []
@@ -222,6 +223,8 @@ const AdvancedFilterBuilder = ({
             ))}
           </Box>
         </Box>
+
+        {editingFilter && <ShareFilterSection filterId={editingFilter.id} />}
 
         <Divider sx={{ mb: 2.5 }} />
 
