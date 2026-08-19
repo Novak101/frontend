@@ -23,6 +23,7 @@ import UpdatePasswordView from '../views/Authorization/UpdatePasswordView'
 import ChoreView from '../views/ChoreEdit/ChoreView'
 import ArchivedTasks from '../views/Chores/ArchivedTasks'
 import MyChores from '../views/Chores/MyChores'
+import SharedFilterView from '../views/Chores/SharedFilterView'
 import JoinCircleView from '../views/Circles/JoinCircle'
 import NotFound from '../views/components/NotFound'
 import FilterView from '../views/Filters/FilterView'
@@ -275,6 +276,15 @@ const Router = createBrowserRouter([
         element: <NotFound />,
       },
     ],
+  },
+  // Sibling of the '/' route (not nested under it) so it skips App's chrome -
+  // NavBar, AuthProvider, SSEProvider, GlobalSearchProvider - since this page
+  // is meant to be embedded (e.g. a Home Assistant iframe card) and works
+  // fully unauthenticated.
+  {
+    path: '/share/:token',
+    element: <SharedFilterView />,
+    errorElement: <Error />,
   },
 ])
 
