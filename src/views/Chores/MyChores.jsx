@@ -329,6 +329,7 @@ const MyChores = () => {
       ChoreFilters(impersonatedUser?.userId || userProfile?.id)[
         selectedChoreFilter
       ],
+      membersData?.res,
     )
 
     return sections
@@ -344,6 +345,7 @@ const MyChores = () => {
     selectedProject,
     impersonatedUser?.userId,
     userProfile?.id,
+    membersData?.res,
   ])
 
   useEffect(() => {

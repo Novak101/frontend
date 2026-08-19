@@ -167,7 +167,7 @@ const OptionChips = ({ options, selected, multi, onToggle }) => (
  *  onProjectSelect   – (project) => void
  *  selectedAssigneeFilter – 'anyone' | 'assigned_to_me' | 'available_for_me' | 'assigned_to_others'
  *  onAssigneeFilterChange – (key) => void
- *  selectedGroupBy   – 'default' | 'due_date' | 'priority' | 'labels'
+ *  selectedGroupBy   – 'default' | 'due_date' | 'priority' | 'labels' | 'assignee'
  *  onGroupBySelect   – (value) => void
  *  viewMode          – 'default' | 'compact' | 'calendar'
  *  onToggleViewMode  – (value?) => void
@@ -517,6 +517,7 @@ const ChoreToolbar = ({
     { value: 'due_date', label: 'Due Date' },
     { value: 'priority', label: 'Priority' },
     { value: 'labels', label: 'Labels' },
+    { value: 'assignee', label: 'Assignee' },
   ]
 
   const assigneeOptions = [

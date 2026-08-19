@@ -8,6 +8,7 @@ export const GROUPING_OPTIONS = Object.freeze({
   DUE_DATE: 'due_date',
   PRIORITY: 'priority',
   LABELS: 'labels',
+  ASSIGNEE: 'assignee',
 })
 
 export const ChoreHistoryStatus = Object.freeze({
@@ -86,7 +87,7 @@ const buildActualDateGroups = chores => {
   return { dateGroups, anytime }
 }
 
-export const ChoresGrouper = (groupBy, chores, filter) => {
+export const ChoresGrouper = (groupBy, chores, filter, performers = []) => {
   if (filter) {
     chores = chores.filter(chore => filter(chore))
   } else {
@@ -301,6 +302,37 @@ export const ChoresGrouper = (groupBy, chores, filter) => {
       groups.sort((a, b) => {
         a.name < b.name ? 1 : -1
       })
+      break
+    case 'assignee': {
+      groupRaw = {}
+      const performerNames = {}
+      performers.forEach(p => {
+        performerNames[p.userId] = p.displayName || p.username
+      })
+      chores.forEach(chore => {
+        const assigneeIds = chore.assignees?.length
+          ? chore.assignees.map(a => a.userId)
+          : [chore.assignedTo].filter(Boolean)
+        if (assigneeIds.length === 0) {
+          groupRaw['unassigned'] ??= []
+          groupRaw['unassigned'].push(chore)
+          return
+        }
+        assigneeIds.forEach(userId => {
+          groupRaw[userId] ??= []
+          groupRaw[userId].push(chore)
+        })
+      })
+      groups = Object.keys(groupRaw).map(key => ({
+        name:
+          key === 'unassigned'
+            ? 'Unassigned'
+            : performerNames[key] || `User ${key}`,
+        content: groupRaw[key],
+      }))
+      groups.sort((a, b) => (a.name < b.name ? -1 : 1))
+      break
+    }
   }
   return groups
 }

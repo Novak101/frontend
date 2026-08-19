@@ -45,6 +45,17 @@ import ChoreActionMenu from '../components/ChoreActionMenu'
 import PendingBadge from '../components/PendingBadge'
 const ChoreCard = ({
   chore,
+  // Suppresses the userProfile fetch (which goes through the authenticated
+  // apiClient singleton and can trigger a hard redirect to /login on a stale
+  // token) without disabling interaction like viewOnly does. Used by the
+  // anonymous share view, which needs cards to stay clickable.
+  disableProfileFetch,
+  // Hides the "..." overflow menu (ChoreActionMenu). It fetches projects
+  // unconditionally on mount and several of its items navigate to
+  // authenticated in-app routes (/chores/:id/edit, etc.) - none of which
+  // are backed by the share API, so the anonymous share view hides it
+  // rather than exposing dead or auth-breaking controls.
+  hideOverflowMenu,
   isMultiSelectMode = false,
   isSelected = false,
   onAction,
@@ -56,7 +67,9 @@ const ChoreCard = ({
   sx,
   viewOnly,
 }) => {
-  const { data: userProfile } = useUserProfile({ enabled: !viewOnly })
+  const { data: userProfile } = useUserProfile({
+    enabled: !viewOnly && !disableProfileFetch,
+  })
   const { timeFormat } = useLocalization()
   const { data: pendingCmds } = usePendingCommands(chore.id)
 
@@ -551,34 +564,38 @@ const ChoreCard = ({
                       </div>
                     </IconButton>
                   )}
-                  <ChoreActionMenu
-                    variant='plain'
-                    chore={chore}
-                    onCompleteWithNote={() =>
-                      onAction('completeWithNote', chore)
-                    }
-                    onCompleteWithPastDate={() =>
-                      onAction('completeWithPastDate', chore)
-                    }
-                    onAction={(type, chore, extraData) =>
-                      onAction(type, chore, extraData)
-                    }
-                    onChangeAssignee={() => onAction('changeAssignee', chore)}
-                    onChangeDueDate={() => onAction('changeDueDate', chore)}
-                    onWriteNFC={() => onAction('writeNFC', chore)}
-                    onNudge={() => onAction('nudge', chore)}
-                    onDelete={() => onAction('delete', chore)}
-                    sx={{
-                      width: 32,
-                      height: 32,
-                      color: 'text.tertiary',
-                      flexShrink: 0,
-                      '&:hover': {
-                        color: 'text.secondary',
-                        bgcolor: 'background.level1',
-                      },
-                    }}
-                  />
+                  {!hideOverflowMenu && (
+                    <ChoreActionMenu
+                      variant='plain'
+                      chore={chore}
+                      onCompleteWithNote={() =>
+                        onAction('completeWithNote', chore)
+                      }
+                      onCompleteWithPastDate={() =>
+                        onAction('completeWithPastDate', chore)
+                      }
+                      onAction={(type, chore, extraData) =>
+                        onAction(type, chore, extraData)
+                      }
+                      onChangeAssignee={() =>
+                        onAction('changeAssignee', chore)
+                      }
+                      onChangeDueDate={() => onAction('changeDueDate', chore)}
+                      onWriteNFC={() => onAction('writeNFC', chore)}
+                      onNudge={() => onAction('nudge', chore)}
+                      onDelete={() => onAction('delete', chore)}
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        color: 'text.tertiary',
+                        flexShrink: 0,
+                        '&:hover': {
+                          color: 'text.secondary',
+                          bgcolor: 'background.level1',
+                        },
+                      }}
+                    />
+                  )}
                 </Box>
               )}
             </Grid>
